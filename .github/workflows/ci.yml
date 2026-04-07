@@ -21,14 +21,13 @@ jobs:
       - name: Run tests
         run: mvn test
 
-      - name: Build jar
-        run: mvn clean package -DskipTests
+      - name: Build Docker image
+        run: docker build -t app .
 
-      - name: Run application
+      - name: Run container
         run: |
-          java -jar target/*.jar &
+          docker run -d -p 8080:8080 --name app app
           sleep 10
 
-      - name: Smoke test (curl)
-        run: |
-          curl -f http://localhost:8080/api/hello
+      - name: Curl test
+        run: curl -f http://localhost:8080/api/hello
